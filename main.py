@@ -18,6 +18,9 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
+# Твой реальный Telegram ID для получения уведомлений об оплате
+ADMIN_ID = 8718115810
+
 def get_main_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
@@ -36,6 +39,7 @@ def get_book_keyboard():
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
+    # Если запуск делает админ, просто покажем меню
     await message.answer(
         f"Вітаємо, {message.from_user.first_name}! 👋\n\n"
         "Ласкаво просимо до нашого магазину електронних книг.\n"
@@ -89,7 +93,26 @@ async def process_buy(callback: types.CallbackQuery):
     )
     await callback.answer()
 
-
+@dp.message()
+async def forward_to_admin(message: types.Message):
+    # Если сообщение написал сам админ, бот на него не реагирует как на заказ
+    if message.from_user.id == ADMIN_ID:
+        return
+    
+    # Автоматический ответ покупателю
+    await message.answer("⏳ Дякуємо! Ваше повідомлення та скріншот передано адміністратору. Очікуйте перевірки.")
+    
+    # Информация о клиенте для тебя
+    user_info = (
+        f"📥 **Нова оплата / повідомлення від покупця!**\n"
+        f"👤 Ім'я: {message.from_user.full_name}\n"
+        f"🔗 Юзернейм: @{message.from_user.username or 'немає'}\n"
+        f"🆔 ID: {message.from_user.id}"
+    )
+    await bot.send_message(chat_id=ADMIN_ID, text=user_info, parse_mode="Markdown")
+    
+    # Пересылка скриншота или текста тебе в ЛС
+    await message.forward(chat_id=ADMIN_ID)
 
 async def main():
     print("Бот запущено!")
