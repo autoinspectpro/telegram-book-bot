@@ -81,21 +81,18 @@ async def process_buy(callback: types.CallbackQuery):
     await callback.message.answer("⏳ Обробка замовлення...")
     await asyncio.sleep(1)
     
-    file_path = "⁠kniga_telegram_bots_i_sayty_s_nulya.docx" 
+    # Точне ім'я файлу, яке ти завантажив на GitHub
+    file_name = "kniga_telegram_bots_i_sayty_s_nulya.docx"
     
-    if os.path.exists(file_path):
-        document = FSInputFile(file_path)
-        await callback.message.answer("✅ Оплата успішна! Дякуємо за покупку.")
-        await callback.message.answer_document(
-            document=document,
-            caption="📖 Ось ваша електронна книга! Приємного читання!"
-        )
-    else:
-        await callback.message.answer(
-            "✅ Оплата успішна, але файл книги ще завантажується на сервер. Спробуйте пізніше."
-        )
+    document = FSInputFile(file_name)
+    await callback.message.answer("✅ Оплата успішна! Дякуємо за покупку.")
+    await callback.message.answer_document(
+        document=document,
+        caption="📖 Ось ваша електронна книга! Приємного читання!"
+    )
         
     await callback.answer()
+
 
 async def main():
     print("Бот запущено!")
