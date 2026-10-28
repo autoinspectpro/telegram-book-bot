@@ -78,20 +78,17 @@ async def back_main(callback: types.CallbackQuery):
 
 @dp.callback_query(F.data == "buy_book")
 async def process_buy(callback: types.CallbackQuery):
-    await callback.message.answer("⏳ Обробка замовлення...")
-    await asyncio.sleep(1)
-    
-    # Точне ім'я файлу, яке ти завантажив на GitHub
-    file_name = "kniga_telegram_bots_i_sayty_s_nulya.docx"
-    
-    document = FSInputFile(file_name)
-    await callback.message.answer("✅ Оплата успішна! Дякуємо за покупку.")
-    await callback.message.answer_document(
-        document=document,
-        caption="📖 Ось ваша електронна книга! Приємного читання!"
+    await callback.message.answer(
+        "💳 **Реквізити для оплати:**\n\n"
+        "Номер картки А-Банк: `4323 3450 4950 5424`\n"
+        "Отримувач: Богдан П.\n"
+        "Сума: 150 грн (приклад)\n\n"
+        "📌 Після оплати надішліть скріншот або квитанцію сюди в чат, "
+        "і ми надішлемо вам книгу вручну!",
+        parse_mode="Markdown"
     )
-        
     await callback.answer()
+
 
 
 async def main():
